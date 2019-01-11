@@ -1,0 +1,22 @@
+---
+apiVersion: consul.zdq0394.io/v1alpha1
+kind: Consul
+metadata:
+    name: myconsul
+    namespace: dq
+spec:
+    consul:
+        replicas: 3
+        image: registry.docker-cn.com/library/consul:1.4.0
+        resources:
+            requests:
+                cpu: 100m
+                memory: 512Mi
+            limits:
+                cpu: 400m
+                memory: 2048Mi
+        storage:
+            size: 1Gi
+            storageClassName: px-hdd-ha3
+
+    
