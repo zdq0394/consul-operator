@@ -1,6 +1,7 @@
 package consul
 
 import (
+	mgr "github.com/zdq0394/consul-operator/operator/consul/handler"
 	k8sclient "github.com/zdq0394/consul-operator/pkg/k8s"
 	"github.com/zdq0394/consul-operator/pkg/log"
 	k8service "github.com/zdq0394/consul-operator/service/k8s"
@@ -21,8 +22,8 @@ func Start(conf *Config) error {
 	kubeService := k8service.New(kubeClient, consulClient, aeClient, logger)
 
 	crd := NewConsulCRD(kubeService)
-
-	handler := NewConsulHandler(nil)
+	manager := mgr.NewConsulManager(kubeService)
+	handler := NewConsulHandler(nil, manager)
 
 	controllerCfg := &controller.Config{
 		Name:              "Consul Controller",

@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	"github.com/zdq0394/consul-operator/operator"
+	mgr "github.com/zdq0394/consul-operator/operator/consul/handler"
 	"github.com/zdq0394/consul-operator/pkg/apis/consul/v1alpha1"
 	"github.com/zdq0394/consul-operator/pkg/log"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -21,13 +21,15 @@ const (
 )
 
 type ConsulHandler struct {
-	Labels map[string]string
+	Manager mgr.ConsulManager
+	Labels  map[string]string
 }
 
-func NewConsulHandler(labels map[string]string) *ConsulHandler {
+func NewConsulHandler(labels map[string]string, manager mgr.ConsulManager) *ConsulHandler {
 	curLabels := operator.MergeLabels(defaultLabels, labels)
 	return &ConsulHandler{
-		Labels: curLabels,
+		Labels:  curLabels,
+		Manager: manager,
 	}
 }
 
@@ -66,5 +68,14 @@ func (h *ConsulHandler) generateInstanceLabels(rc *v1alpha1.Consul) map[string]s
 
 func (h *ConsulHandler) ensurePresent(rc *v1alpha1.Consul,
 	labels map[string]string, ownerRefs []metav1.OwnerReference) error {
+	if err := h.Manager.EnsureConsulConfigMap(rc, labels, ownerRefs); err != nil {
+		return err
+	}
+	if err := h.Manager.EnsureConsulHeadlessService(rc, labels, ownerRefs); err != nil {
+		return err
+	}
+	if err := h.Manager.EnsureConsulStatefulset(rc, labels, ownerRefs); err != nil {
+		return err
+	}
 	return nil
 }
