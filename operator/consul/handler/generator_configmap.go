@@ -39,6 +39,12 @@ func generateConfigMap(rc *v1alpha1.Consul,
 	statefulSetName := generateName(statefulsetNamePrefix, rc.Name)
 	svcName := generateName(svcHeadlessNamePrefix, rc.Name)
 	postix := fmt.Sprintf("%s.%s.svc.k8s.%s", svcName, namespace, clusterDomain)
+
+	startJoins := make([]string, 0)
+	for i := 0; i < int(rc.Spec.Consul.Replicas); i++ {
+		startJoins = append(startJoins, fmt.Sprintf(fmt.Sprintf("%s-%d.%s", statefulSetName, i, postix)))
+	}
+
 	conf := consulConf{
 		BootstrapExpect:    int(rc.Spec.Consul.Replicas),
 		ClientAddr:         "0.0.0.0",
@@ -55,12 +61,8 @@ func generateConfigMap(rc *v1alpha1.Consul,
 		LogLevel:         "INFO",
 		RejoinAfterLeave: true,
 		Server:           true,
-		StartJoin: []string{
-			fmt.Sprintf("%s-0.%s", statefulSetName, postix),
-			fmt.Sprintf("%s-1.%s", statefulSetName, postix),
-			fmt.Sprintf("%s-2.%s", statefulSetName, postix),
-		},
-		UIEnabled: true,
+		StartJoin:        startJoins,
+		UIEnabled:        true,
 	}
 
 	confData, err := json.Marshal(conf)
