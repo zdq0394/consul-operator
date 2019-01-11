@@ -39,7 +39,7 @@ func (h *ConsulHandler) Add(ctx context.Context, obj runtime.Object) error {
 	if !ok {
 		return fmt.Errorf("Cannot handle Consul")
 	}
-	log.Infof("Handler Create Consul:%s/%s", rc.Namespace, rc.Name)
+	log.Infof("Handler Create Consul:%s/%s\n", rc.Namespace, rc.Name)
 	oRefs := h.createOwnerReferences(rc)
 	instanceLabels := h.generateInstanceLabels(rc)
 	labels := operator.MergeLabels(h.Labels, rc.Labels, instanceLabels)

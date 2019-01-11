@@ -12,6 +12,7 @@ import (
 type Config struct {
 	Development       bool
 	Kubeconfig        string
+	ClusterDomain     string
 	ConcurrentWorkers int
 }
 
@@ -22,7 +23,7 @@ func Start(conf *Config) error {
 	kubeService := k8service.New(kubeClient, consulClient, aeClient, logger)
 
 	crd := NewConsulCRD(kubeService)
-	manager := mgr.NewConsulManager(kubeService)
+	manager := mgr.NewConsulManager(kubeService, conf.ClusterDomain)
 	handler := NewConsulHandler(nil, manager)
 
 	controllerCfg := &controller.Config{

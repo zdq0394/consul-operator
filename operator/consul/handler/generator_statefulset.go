@@ -8,14 +8,14 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func generateRedisStatefulset(rc *v1alpha1.Consul,
+func generateConsulStatefulset(rc *v1alpha1.Consul,
 	labels map[string]string, ownerRefs []metav1.OwnerReference) *appsv1beta2.StatefulSet {
 	name := generateName(statefulsetNamePrefix, rc.Name)
 	serviceName := generateName(svcHeadlessNamePrefix, rc.Name)
 	namespace := rc.Namespace
 
 	spec := rc.Spec
-	redisImage := spec.Consul.Image
+	consulImage := spec.Consul.Image
 	replicas := spec.Consul.Replicas
 
 	ss := &appsv1beta2.StatefulSet{
@@ -42,16 +42,12 @@ func generateRedisStatefulset(rc *v1alpha1.Consul,
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
 					Containers: []corev1.Container{
 						{
-							Name:            "redis",
-							Image:           redisImage,
+							Name:            "consul",
+							Image:           consulImage,
 							ImagePullPolicy: "Always",
-							Command: []string{
-								"redis-server",
-							},
 							Args: []string{
-								"/etc/redis/redis.conf",
-								"--protected-mode",
-								"no",
+								"agent",
+								"-config-dir=/etc/consul.d",
 							},
 							Ports:        getContainerPorts(rc),
 							VolumeMounts: getVolumeMounts(rc),
@@ -69,12 +65,12 @@ func generateRedisStatefulset(rc *v1alpha1.Consul,
 func getVolumeMounts(rc *v1alpha1.Consul) []corev1.VolumeMount {
 	return []corev1.VolumeMount{
 		{
-			Name:      "redis-conf",
-			MountPath: "/etc/redis",
+			Name:      "consul-conf",
+			MountPath: "/etc/consul.d",
 		},
 		{
-			Name:      "redis-data",
-			MountPath: "/var/lib/redis",
+			Name:      "consul-data",
+			MountPath: "/var/consul",
 		},
 	}
 }
@@ -82,7 +78,7 @@ func getVolumeMounts(rc *v1alpha1.Consul) []corev1.VolumeMount {
 func getVolumes(rc *v1alpha1.Consul) []corev1.Volume {
 	return []corev1.Volume{
 		{
-			Name: "redis-conf",
+			Name: "consul-conf",
 			VolumeSource: corev1.VolumeSource{
 				ConfigMap: &corev1.ConfigMapVolumeSource{
 					LocalObjectReference: corev1.LocalObjectReference{
@@ -97,13 +93,8 @@ func getVolumes(rc *v1alpha1.Consul) []corev1.Volume {
 func getContainerPorts(rc *v1alpha1.Consul) []corev1.ContainerPort {
 	return []corev1.ContainerPort{
 		{
-			Name:          "redis",
-			ContainerPort: 6379,
-			Protocol:      corev1.ProtocolTCP,
-		},
-		{
-			Name:          "cluster",
-			ContainerPort: 16379,
+			Name:          consulHeadlessPortName,
+			ContainerPort: consulHeadlessPort,
 			Protocol:      corev1.ProtocolTCP,
 		},
 	}
@@ -116,7 +107,7 @@ func getVolumeClaimTemplates(rc *v1alpha1.Consul,
 	return []corev1.PersistentVolumeClaim{
 		{
 			ObjectMeta: metav1.ObjectMeta{
-				Name:            "redis-data",
+				Name:            "consul-data",
 				Namespace:       rc.Namespace,
 				Labels:          labels,
 				OwnerReferences: ownerRefs,

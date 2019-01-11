@@ -20,11 +20,17 @@ func init() {
 			Name:   "kubeconfig",
 			Usage:  "kubeconfig of the kubernetes cluster",
 		},
+		cli.StringFlag{
+			EnvVar: "ClusterDomain",
+			Name:   "clusterdomain",
+			Value:  "cluster.local",
+			Usage:  "Kubernetes cluster domain: e.g. cluster.local",
+		},
 		cli.IntFlag{
 			EnvVar: "ConcurrentWorkers",
 			Name:   "concurrentworkers",
 			Value:  3,
-			Usage:  "Kubernetes cluster domain: e.g. cluster.local",
+			Usage:  "Concurrent goroutines to process crd management",
 		},
 	}
 }
@@ -34,6 +40,7 @@ func Action(ctx *cli.Context) {
 	conf := operator.Config{}
 	conf.Development = ctx.Bool("develop")
 	conf.Kubeconfig = ctx.String("kubeconfig")
+	conf.ClusterDomain = ctx.String("clusterdomain")
 	conf.ConcurrentWorkers = ctx.Int("concurrentworkers")
 	operator.Start(&conf)
 }

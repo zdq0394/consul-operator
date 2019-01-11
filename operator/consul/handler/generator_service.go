@@ -6,7 +6,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func generateRedisHeadlessService(rc *v1alpha1.Consul,
+func generateConsulHeadlessService(rc *v1alpha1.Consul,
 	labels map[string]string, ownerRefs []metav1.OwnerReference) *corev1.Service {
 
 	name := generateName(svcHeadlessNamePrefix, rc.Name)
@@ -24,9 +24,9 @@ func generateRedisHeadlessService(rc *v1alpha1.Consul,
 			ClusterIP: corev1.ClusterIPNone,
 			Ports: []corev1.ServicePort{
 				{
-					Port:     redisHeadlessPort,
+					Port:     consulHeadlessPort,
 					Protocol: corev1.ProtocolTCP,
-					Name:     redisHeadlessPortName,
+					Name:     consulHeadlessPortName,
 				},
 			},
 			Selector: labels,

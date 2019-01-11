@@ -14,27 +14,29 @@ type ConsulManager interface {
 }
 
 type consulKubeClusterManager struct {
-	K8SService k8s.Services
+	ClusterDomain string
+	K8SService    k8s.Services
 }
 
 // NewConsulManager new consul cluster manager.
-func NewConsulManager(s k8s.Services) ConsulManager {
+func NewConsulManager(s k8s.Services, cd string) ConsulManager {
 	return &consulKubeClusterManager{
-		K8SService: s,
+		K8SService:    s,
+		ClusterDomain: cd,
 	}
 }
 
 func (s *consulKubeClusterManager) EnsureConsulConfigMap(rc *v1alpha1.Consul, labels map[string]string, ownerRefs []metav1.OwnerReference) error {
-	configMap := generateRedisConfigMap(rc, labels, ownerRefs)
+	configMap := generateConfigMap(rc, labels, ownerRefs, s.ClusterDomain)
 	return s.K8SService.CreateOrUpdateConfigMap(rc.Namespace, configMap)
 }
 
 func (s *consulKubeClusterManager) EnsureConsulStatefulset(rc *v1alpha1.Consul, labels map[string]string, ownerRefs []metav1.OwnerReference) error {
-	ss := generateRedisStatefulset(rc, labels, ownerRefs)
+	ss := generateConsulStatefulset(rc, labels, ownerRefs)
 	return s.K8SService.CreateOrUpdateStatefulSet(rc.Namespace, ss)
 }
 
 func (s *consulKubeClusterManager) EnsureConsulHeadlessService(rc *v1alpha1.Consul, labels map[string]string, ownerRefs []metav1.OwnerReference) error {
-	svc := generateRedisHeadlessService(rc, labels, ownerRefs)
+	svc := generateConsulHeadlessService(rc, labels, ownerRefs)
 	return s.K8SService.CreateIfNotExistsService(rc.Namespace, svc)
 }
