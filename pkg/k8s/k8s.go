@@ -42,7 +42,7 @@ func CreateKubernetesClients(development bool, kubeconfig string) (kubernetes.In
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	customClientset, err := redisclientset.NewForConfig(config)
+	customClientset, err := versionedclientset.NewForConfig(config)
 	if err != nil {
 		return nil, nil, nil, err
 	}

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/zdq0394/consul-operator/pkg/operator/controller"
+	"github.com/zdq0394/k8soperator/pkg/operator/controller"
 )
 
 // Operator is a controller, at code level have almost same contract of behavior

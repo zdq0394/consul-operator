@@ -997,6 +997,24 @@
 			"revision": ""
 		},
 		{
+			"checksumSHA1": "/85+RWJPFZyRMIgtYs4nlQGWnLY=",
+			"path": "github.com/zdq0394/k8soperator/pkg/operator",
+			"revision": "9459ba92da2f5abcc0d39b0892783933de1f6f44",
+			"revisionTime": "2019-01-10T08:57:16Z"
+		},
+		{
+			"checksumSHA1": "w7yQLcY+nPM79FVqw3w4f7TsHDk=",
+			"path": "github.com/zdq0394/k8soperator/pkg/operator/controller",
+			"revision": "9459ba92da2f5abcc0d39b0892783933de1f6f44",
+			"revisionTime": "2019-01-10T08:57:16Z"
+		},
+		{
+			"checksumSHA1": "qyat3QymfxB3HuDWkA09TI00JdE=",
+			"path": "github.com/zdq0394/k8soperator/pkg/operator/crd",
+			"revision": "9459ba92da2f5abcc0d39b0892783933de1f6f44",
+			"revisionTime": "2019-01-10T08:57:16Z"
+		},
+		{
 			"checksumSHA1": "pCY4YtdNKVBYRbNvODjx8hj0hIs=",
 			"path": "golang.org/x/net/http/httpguts",
 			"revision": "c44066c5c816ec500d459a2a324a753f78531ae0",
@@ -1346,5 +1364,5 @@
 			"revision": ""
 		}
 	],
-	"rootPath": "github.com/zdq0394/redis-cluster-operator"
+	"rootPath": "github.com/zdq0394/consul-operator"
 }
