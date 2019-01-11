@@ -38,11 +38,11 @@ func generateConfigMap(rc *v1alpha1.Consul,
 	namespace := rc.Namespace
 	statefulSetName := generateName(statefulsetNamePrefix, rc.Name)
 	svcName := generateName(svcHeadlessNamePrefix, rc.Name)
-	postix := fmt.Sprintf("%s.%s.svc.k8s.%s", svcName, namespace, clusterDomain)
 
+	postix := fmt.Sprintf("%s.%s.svc.k8s.%s", svcName, namespace, clusterDomain)
 	startJoins := make([]string, 0)
 	for i := 0; i < int(rc.Spec.Consul.Replicas); i++ {
-		startJoins = append(startJoins, fmt.Sprintf(fmt.Sprintf("%s-%d.%s", statefulSetName, i, postix)))
+		startJoins = append(startJoins, fmt.Sprintf("%s-%d.%s", statefulSetName, i, postix))
 	}
 
 	conf := consulConf{
