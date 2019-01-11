@@ -38,7 +38,7 @@ func generateConfigMap(rc *v1alpha1.Consul,
 	namespace := rc.Namespace
 	statefulSetName := generateName(statefulsetNamePrefix, rc.Name)
 	svcName := generateName(svcHeadlessNamePrefix, rc.Name)
-	postix := fmt.Sprintf(".%s.%s.svc.k8s.%s", svcName, namespace, clusterDomain)
+	postix := fmt.Sprintf("%s.%s.svc.k8s.%s", svcName, namespace, clusterDomain)
 	conf := consulConf{
 		BootstrapExpect:    int(rc.Spec.Consul.Replicas),
 		ClientAddr:         "0.0.0.0",
