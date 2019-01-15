@@ -3,5 +3,5 @@ COPY make/release/consulops /opt/consul/operator
 
 WORKDIR /opt/consul
 
-ENTRYPOINT ["/opt/consul/operator", "cluster"]
+ENTRYPOINT ["/opt/consul/operator", "consul"]
 CMD ["--clusterdomain=cluster.local", "--concurrentworkers=3"]
