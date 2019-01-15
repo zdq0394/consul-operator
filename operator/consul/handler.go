@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/zdq0394/consul-operator/operator"
 	mgr "github.com/zdq0394/consul-operator/operator/consul/handler"
 	"github.com/zdq0394/consul-operator/pkg/apis/consul/v1alpha1"
 	"github.com/zdq0394/consul-operator/pkg/log"
+	"github.com/zdq0394/k8soperator/pkg/util"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -26,7 +26,7 @@ type ConsulHandler struct {
 }
 
 func NewConsulHandler(labels map[string]string, manager mgr.ConsulManager) *ConsulHandler {
-	curLabels := operator.MergeLabels(defaultLabels, labels)
+	curLabels := util.MergeLabels(defaultLabels, labels)
 	return &ConsulHandler{
 		Labels:  curLabels,
 		Manager: manager,
@@ -42,7 +42,7 @@ func (h *ConsulHandler) Add(ctx context.Context, obj runtime.Object) error {
 	log.Infof("Handler Create Consul:%s/%s\n", rc.Namespace, rc.Name)
 	oRefs := h.createOwnerReferences(rc)
 	instanceLabels := h.generateInstanceLabels(rc)
-	labels := operator.MergeLabels(h.Labels, rc.Labels, instanceLabels)
+	labels := util.MergeLabels(h.Labels, rc.Labels, instanceLabels)
 	return h.ensurePresent(rc, labels, oRefs)
 }
 
