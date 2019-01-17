@@ -25,25 +25,27 @@ const (
 type Handler struct {
 	Manager mgr.ConsulManager
 	Labels  map[string]string
+	logger  log.Logger
 }
 
 // NewConsulHandler return a Handler instance.
-func NewConsulHandler(labels map[string]string, manager mgr.ConsulManager) *Handler {
+func NewConsulHandler(labels map[string]string, manager mgr.ConsulManager, logger log.Logger) *Handler {
 	curLabels := util.MergeLabels(defaultLabels, labels)
 	return &Handler{
 		Labels:  curLabels,
 		Manager: manager,
+		logger:  logger,
 	}
 }
 
 // Add will be called when a Consul resource added/updated.
 func (h *Handler) Add(ctx context.Context, obj runtime.Object) error {
-	log.Infoln("Create Consul Here...")
+	h.logger.Infoln("Create Consul Here...")
 	rc, ok := obj.(*v1alpha1.Consul)
 	if !ok {
 		return fmt.Errorf("Cannot handle Consul")
 	}
-	log.Infof("Handler Create Consul:%s/%s\n", rc.Namespace, rc.Name)
+	h.logger.Infof("Handler Create Consul:%s/%s\n", rc.Namespace, rc.Name)
 	oRefs := h.createOwnerReferences(rc)
 	instanceLabels := h.generateInstanceLabels(rc)
 	labels := util.MergeLabels(h.Labels, rc.Labels, instanceLabels)
@@ -52,7 +54,7 @@ func (h *Handler) Add(ctx context.Context, obj runtime.Object) error {
 
 // Delete will be called when a Consul resource deleted.
 func (h *Handler) Delete(ctx context.Context, key string) error {
-	log.Infoln("Delete Consul Here:", key)
+	h.logger.Infoln("Delete Consul Here:", key)
 	// No need to do anything, Kubernetes will handle it by the owner reference done on the creation.
 	return nil
 }

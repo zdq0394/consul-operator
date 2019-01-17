@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/urfave/cli"
 	"github.com/zdq0394/consul-operator/cmd/operator/consul"
+	"github.com/zdq0394/consul-operator/pkg/log"
 )
 
 func main() {
@@ -22,8 +22,7 @@ func main() {
 	app.Commands = []cli.Command{
 		consul.Command(),
 	}
-
 	if err := app.Run(os.Args); err != nil {
-		fmt.Println(err)
+		log.Errorln(err)
 	}
 }

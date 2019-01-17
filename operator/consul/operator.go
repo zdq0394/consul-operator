@@ -19,12 +19,13 @@ type Config struct {
 // Start the Operator
 func Start(conf *Config) error {
 	kubeClient, consulClient, aeClient, _ := k8sutil.CreateKubernetesClients(conf.Development, conf.Kubeconfig)
+
 	logger := log.Base()
 	k8sService := k8s.New(kubeClient, consulClient, aeClient, logger)
 
 	crd := NewConsulCRD(k8sService)
 	manager := mgr.NewConsulManager(k8sService, conf.ClusterDomain)
-	handler := NewConsulHandler(nil, manager)
+	handler := NewConsulHandler(nil, manager, logger)
 
 	controllerCfg := &controller.Config{
 		Name:              "Consul Controller",
