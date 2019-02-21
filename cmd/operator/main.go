@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/zdq0394/consul-operator/cmd/operator/consul"
-	"github.com/zdq0394/consul-operator/pkg/log"
+	"github.com/zdq0394/k8soperator/pkg/log"
 )
 
 func main() {

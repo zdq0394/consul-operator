@@ -3,7 +3,7 @@ package k8s
 import (
 	consulv1alpha1 "github.com/zdq0394/consul-operator/pkg/apis/consul/v1alpha1"
 	clientset "github.com/zdq0394/consul-operator/pkg/client/clientset/versioned"
-	"github.com/zdq0394/consul-operator/pkg/log"
+	"github.com/zdq0394/k8soperator/pkg/log"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 )

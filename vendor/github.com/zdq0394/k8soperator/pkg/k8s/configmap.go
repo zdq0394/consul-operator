@@ -1,11 +1,12 @@
 package k8s
 
 import (
-	"github.com/zdq0394/consul-operator/pkg/log"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+
+	"github.com/zdq0394/k8soperator/pkg/log"
 )
 
 // ConfigMap the ServiceAccount service that knows how to interact with k8s to manage them

@@ -3,8 +3,8 @@ package consul
 import (
 	mgr "github.com/zdq0394/consul-operator/operator/consul/handler"
 	"github.com/zdq0394/consul-operator/pkg/k8sutil"
-	"github.com/zdq0394/consul-operator/pkg/log"
 	"github.com/zdq0394/consul-operator/service/k8s"
+	"github.com/zdq0394/k8soperator/pkg/log"
 	"github.com/zdq0394/k8soperator/pkg/operator"
 	"github.com/zdq0394/k8soperator/pkg/operator/controller"
 )
