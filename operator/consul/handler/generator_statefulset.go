@@ -51,6 +51,7 @@ func generateConsulStatefulset(rc *v1alpha1.Consul,
 							},
 							Ports:        getContainerPorts(rc),
 							VolumeMounts: getVolumeMounts(rc),
+							Resources:    getResources(rc),
 						},
 					},
 					Volumes: getVolumes(rc),
@@ -124,5 +125,31 @@ func getVolumeClaimTemplates(rc *v1alpha1.Consul,
 				StorageClassName: &storageClassName,
 			},
 		},
+	}
+}
+
+func generateResourceList(cpu string, memory string) corev1.ResourceList {
+	resources := corev1.ResourceList{}
+	if cpu != "" {
+		resources[corev1.ResourceCPU], _ = resource.ParseQuantity(cpu)
+	}
+	if memory != "" {
+		resources[corev1.ResourceMemory], _ = resource.ParseQuantity(memory)
+	}
+	return resources
+}
+
+func getRequests(resources v1alpha1.Resources) corev1.ResourceList {
+	return generateResourceList(resources.Requests.CPU, resources.Requests.Memory)
+}
+
+func getLimits(resources v1alpha1.Resources) corev1.ResourceList {
+	return generateResourceList(resources.Limits.CPU, resources.Limits.Memory)
+}
+
+func getResources(r *v1alpha1.Consul) corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
+		Requests: getRequests(r.Spec.Consul.Resources),
+		Limits:   getLimits(r.Spec.Consul.Resources),
 	}
 }
